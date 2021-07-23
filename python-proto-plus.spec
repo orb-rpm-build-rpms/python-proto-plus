@@ -7,7 +7,7 @@ Version:        1.19.0
 %forgemeta
 
 Name:           python-%{srcname}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python wrapper around protocol buffers
 
 License:        ASL 2.0
@@ -91,5 +91,8 @@ rm -rf html/.{doctrees,buildinfo,nojekyll}
 
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.19.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Thu Jul 15 2021 Major Hayden <major@mhtx.net> - 1.19.0-1
 - First package.
