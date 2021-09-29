@@ -3,11 +3,11 @@
 
 %global         srcname     proto-plus
 %global         forgeurl    https://github.com/googleapis/proto-plus-python
-Version:        1.19.0
+Version:        1.19.2
 %forgemeta
 
 Name:           python-%{srcname}
-Release:        2%{?dist}
+Release:        %autorelease
 Summary:        Python wrapper around protocol buffers
 
 License:        ASL 2.0
@@ -34,7 +34,6 @@ types.}
 
 %package -n python3-%{srcname}
 Summary:        %{summary}
-
 %description -n python3-%{srcname} %{_description}
 
 
@@ -50,12 +49,8 @@ Documentation for python-%{srcname}
 
 
 %prep
-%forgesetup
+%forgeautosetup
 
-# Use local inventory in intersphinx mapping.
-sed -r -i -e \
-    's|https://docs.python.org/3|/%{_docdir}/python3-docs/html|' \
-    docs/conf.py
 
 %generate_buildrequires
 %pyproject_buildrequires -x testing
@@ -65,7 +60,7 @@ sed -r -i -e \
 %pyproject_wheel
 
 # Generate documentation.
-PYTHONPATH="${PWD}:${PWD}/docs/" sphinx-build docs html
+PYTHONPATH="${PWD}:${PWD}/docs/" sphinx-build docs html %{?_smp_mflags}
 rm -rf html/.{doctrees,buildinfo,nojekyll}
 
 
@@ -91,8 +86,4 @@ rm -rf html/.{doctrees,buildinfo,nojekyll}
 
 
 %changelog
-* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.19.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
-
-* Thu Jul 15 2021 Major Hayden <major@mhtx.net> - 1.19.0-1
-- First package.
+%autochangelog
