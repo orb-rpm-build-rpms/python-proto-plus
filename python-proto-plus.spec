@@ -3,7 +3,7 @@
 
 %global         srcname     proto-plus
 %global         forgeurl    https://github.com/googleapis/proto-plus-python
-Version:        1.19.5
+Version:        1.19.6
 %forgemeta
 
 Name:           python-%{srcname}
@@ -17,10 +17,10 @@ Source0:        %forgesource
 BuildArch:      noarch
 
 BuildRequires:  python3-devel
-BuildRequires:  pyproject-rpm-macros
 
 %if %{with tests}
 BuildRequires:  python3dist(pytest)
+BuildRequires:  python3dist(pytz)
 %endif
 
 %global _description %{expand:
@@ -37,19 +37,8 @@ Summary:        %{summary}
 %description -n python3-%{srcname} %{_description}
 
 
-%package -n python3-%{srcname}-doc
-Requires:       python3-docs
-BuildRequires:  python3-docs
-BuildRequires:  python3dist(sphinx)
-BuildRequires:  python3dist(sphinx-rtd-theme)
-Summary:        Documentation for python-%{srcname}
-
-%description -n python3-%{srcname}-doc
-Documentation for python-%{srcname}
-
-
 %prep
-%forgeautosetup
+%forgeautosetup -p1
 
 
 %generate_buildrequires
@@ -59,10 +48,6 @@ Documentation for python-%{srcname}
 %build
 %pyproject_wheel
 
-# Generate documentation.
-PYTHONPATH="${PWD}:${PWD}/docs/" sphinx-build docs html %{?_smp_mflags}
-rm -rf html/.{doctrees,buildinfo,nojekyll}
-
 
 %install
 %pyproject_install
@@ -71,18 +56,12 @@ rm -rf html/.{doctrees,buildinfo,nojekyll}
 
 %if %{with tests}
 %check
-%pytest tests
+%pytest
 %endif
 
 
 %files -n python3-%{srcname} -f %{pyproject_files}
-%license LICENSE
-%doc README.rst CHANGELOG.md
-
-
-%files -n python3-%{srcname}-doc
-%license LICENSE
-%doc html
+%doc README.rst CHANGELOG.md CODE_OF_CONDUCT.md CONTRIBUTING.md CONTRIBUTING.rst
 
 
 %changelog
