@@ -3,7 +3,7 @@
 
 %global         srcname     proto-plus
 %global         forgeurl    https://github.com/googleapis/proto-plus-python
-Version:        1.19.9
+Version:        1.20.0
 %forgemeta
 
 Name:           python-%{srcname}
@@ -16,7 +16,7 @@ Source0:        %forgesource
 
 BuildArch:      noarch
 
-BuildRequires:  python3-devel
+BuildRequires:  pyproject-rpm-macros
 
 %if %{with tests}
 BuildRequires:  python3dist(pytest)
