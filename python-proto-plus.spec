@@ -1,9 +1,9 @@
 # tests are enabled by default
-%bcond_without tests
+%bcond_without  tests
 
 %global         srcname     proto-plus
 %global         forgeurl    https://github.com/googleapis/proto-plus-python
-Version:        1.20.2
+Version:        1.20.4
 %forgemeta
 
 Name:           python-%{srcname}
@@ -16,7 +16,7 @@ Source0:        %forgesource
 
 BuildArch:      noarch
 
-BuildRequires:  pyproject-rpm-macros
+BuildRequires:  python3-devel
 
 %if %{with tests}
 BuildRequires:  python3dist(pytest)
