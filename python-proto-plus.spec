@@ -14,6 +14,12 @@ License:        ASL 2.0
 URL:            %forgeurl
 Source0:        %forgesource
 
+# Python 3.11.0b3 support
+# https://github.com/googleapis/proto-plus-python/issues/326
+# The underlying changes in Python's enum might be reverted,
+# but this patch is backwards compatible.
+Patch:          python3.11.patch
+
 BuildArch:      noarch
 
 BuildRequires:  python3-devel

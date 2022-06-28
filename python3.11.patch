@@ -1,0 +1,35 @@
+diff --git a/proto/enums.py b/proto/enums.py
+index 6f13d32..6207ad7 100644
+--- a/proto/enums.py
++++ b/proto/enums.py
+@@ -58,8 +58,11 @@ class ProtoEnumMeta(enum.EnumMeta):
+         # In 3.7 onwards, we can define an _ignore_ attribute and do some
+         # mucking around with that.
+         if pb_options in attrs._member_names:
+-            idx = attrs._member_names.index(pb_options)
+-            attrs._member_names.pop(idx)
++            if isinstance(attrs._member_names, list):
++                idx = attrs._member_names.index(pb_options)
++                attrs._member_names.pop(idx)
++            else:  # Python 3.11.0b3
++                del attrs._member_names[pb_options]
+ 
+         # Make the descriptor.
+         enum_desc = descriptor_pb2.EnumDescriptorProto(
+diff --git a/tests/test_enum_total_ordering.py b/tests/test_enum_total_ordering.py
+index ad7a369..584a183 100644
+--- a/tests/test_enum_total_ordering.py
++++ b/tests/test_enum_total_ordering.py
+@@ -49,7 +49,11 @@ def test_total_ordering_w_other_enum_type():
+ 
+     for item in enums_test.OtherEnum:
+         assert not to_compare == item
+-        assert to_compare.SOME_VALUE != item
++        assert type(to_compare).SOME_VALUE != item
++        try:
++            assert to_compare.SOME_VALUE != item
++        except AttributeError:  # Python 3.11.0b3
++            pass
+         with pytest.raises(TypeError):
+             assert not to_compare < item
+         with pytest.raises(TypeError):
