@@ -42,7 +42,14 @@ Summary:        %{summary}
 
 
 %generate_buildrequires
-%pyproject_buildrequires %{?with_tests:-x testing}
+# Do NOT pull the "testing" extra. Its only member is google-api-core, which in
+# turn requires proto-plus -- a bootstrap cycle: pulling it into the buildroot
+# drags in the base's old proto-plus (1.22.3, capped at protobuf <5), which
+# cannot coexist with the localrepo's protobuf 6.33.5, so the buildroot becomes
+# unresolvable. None of the 34 test modules actually import google.api_core, so
+# the full test suite still runs with the explicit pytest/pytz BuildRequires
+# below; only the unused integration-test dependency is dropped.
+%pyproject_buildrequires
 
 
 %build
