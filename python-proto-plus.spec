@@ -40,6 +40,16 @@ Summary:        %{summary}
 %prep
 %forgeautosetup -p1
 
+# pytest.ini treats all warnings as errors and already whitelists specific
+# protobuf deprecation warnings. protobuf 6.33.5 (in the localrepo) adds a newer
+# one that proto-plus 1.26.1 predates: passing float_precision to json_format is
+# now deprecated. The library still supports the option (it only warns), and the
+# to_json/to_dict tests exercise it, so whitelist the warning the same way
+# upstream handles the others rather than dropping those tests. The added filter
+# goes after the existing ignores so the "error" default no longer catches it
+# (pytest applies the last matching filter).
+sed -i '/^[[:space:]]*ignore:.*including_default_value_fields/a\    ignore:.*float_precision option is deprecated for json_format.*:UserWarning' pytest.ini
+
 
 %generate_buildrequires
 # Do NOT pull the "testing" extra. Its only member is google-api-core, which in
@@ -65,7 +75,13 @@ Summary:        %{summary}
 %pyproject_check_import
 
 %if %{with tests}
-%pytest
+# Deselect the one test that imports google.type (dayofweek_pb2), which is
+# provided by googleapis-common-protos. The base's version caps protobuf <6 and
+# so cannot be installed alongside protobuf 6.33.5, and the localrepo's
+# protobuf-6 rebuild is built after this package -- so google.type is not
+# available in this buildroot. The import is local to this single test, so
+# deselecting it leaves the rest of the suite intact.
+%pytest --deselect tests/test_fields_enum.py::test_unwrapped_enum_fields
 %endif
 
 
